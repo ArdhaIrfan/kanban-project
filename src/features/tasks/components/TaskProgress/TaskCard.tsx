@@ -1,5 +1,7 @@
 import React from 'react'
 import {useTasksAction} from '../../hooks/Tasks'
+import { useRecoilState } from 'recoil'
+import { tasksState } from '../../TaskAtoms'
 import type { Task, CSSProperties } from '../../../../types'
 import { TASK_PROGRESS_ID } from '../../../../constants/app'
 
@@ -33,6 +35,7 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
 
   const {completeTask} = useTasksAction()
+  const {moveTaskCard} = useTasksAction()
 
   return (
     <div style={styles.taskCard}>
@@ -57,10 +60,19 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
       </div>
       <div style={getArrowPositionStyle(task.progressOrder)}>
         {task.progressOrder !== TASK_PROGRESS_ID.NOT_STARTED && (
-          <button className="material-symbols-outlined">chevron_left</button>
+          <button
+            className="material-symbols-outlined"
+            onClick={(): void => {
+            moveTaskCard(task.id, -1)
+          }}>chevron_left</button>
         )}
         {task.progressOrder !== TASK_PROGRESS_ID.COMPLETED && (
-          <button className="material-symbols-outlined">chevron_right</button>
+          <button 
+            className="material-symbols-outlined"
+            onClick={(): void => {
+              moveTaskCard(task.id, 1)
+            }}
+          >chevron_right</button>
         )}
       </div>
     </div>

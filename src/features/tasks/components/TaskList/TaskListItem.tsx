@@ -51,7 +51,7 @@ const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
           className="material-symbols-outlined"
           style={getIconStyle(task.progressOrder)}
           onClick={(): void => {
-            completeTask(task.id) // Ditambahkan
+            completeTask(task.id)
           }}
         >check_circle</span>
         {task.title}
