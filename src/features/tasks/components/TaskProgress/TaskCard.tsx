@@ -1,5 +1,6 @@
-import React from 'react'
-import {useTasksAction} from '../../hooks/Tasks'
+import React, { useState } from 'react'
+import TaskMenu from '../shared/TaskMenu'
+import { useTasksAction } from '../../hooks/Tasks'
 import { useRecoilState } from 'recoil'
 import { tasksState } from '../../TaskAtoms'
 import type { Task, CSSProperties } from '../../../../types'
@@ -33,21 +34,28 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 }
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
-
-  const {completeTask} = useTasksAction()
-  const {moveTaskCard} = useTasksAction()
+  const { completeTask, moveTaskCard, deleteTask } = useTasksAction()
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   return (
     <div style={styles.taskCard}>
       <div style={styles.taskIcons}>
-      <div
+        <div
           className="material-symbols-outlined"
           style={getIconStyle(task.progressOrder)}
           onClick={(): void => {
             completeTask(task.id)
           }}
-        >check_circle</div>
-        <div className="material-symbols-outlined" style={styles.menuIcon}>
+        >
+          check_circle
+        </div>
+        <div
+          className="material-symbols-outlined"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true)
+          }}
+        >
           more_vert
         </div>
       </div>
@@ -63,18 +71,24 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
           <button
             className="material-symbols-outlined"
             onClick={(): void => {
-            moveTaskCard(task.id, -1)
-          }}>chevron_left</button>
+              moveTaskCard(task.id, -1)
+            }}
+          >
+            chevron_left
+          </button>
         )}
         {task.progressOrder !== TASK_PROGRESS_ID.COMPLETED && (
-          <button 
+          <button
             className="material-symbols-outlined"
             onClick={(): void => {
               moveTaskCard(task.id, 1)
             }}
-          >chevron_right</button>
+          >
+            chevron_right
+          </button>
         )}
       </div>
+      {isMenuOpen && <TaskMenu setIsMenuOpen={setIsMenuOpen} task={task}/>}
     </div>
   )
 }
