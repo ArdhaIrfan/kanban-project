@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { TASK_PROGRESS_ID, TASK_PROGRESS_STATUS, TASK_MODAL_TYPE } from '../../../../constants/app'
-import type { CSSProperties } from '../../../../types'
+import type { CSSProperties, Task } from '../../../../types'
 import { useTasksAction } from '../../hooks/Tasks'
 import type { Dispatch, SetStateAction } from 'react'
 
@@ -8,21 +8,27 @@ interface TaskFormProps {
   type: string
   defaultProgressOrder: number
   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+  task?: Task
 }
 
-const TaskForm = ({ type, defaultProgressOrder, setIsModalOpen  }: TaskFormProps): JSX.Element => {
-  const [title, setTitle] = useState<string>('')
-  const [detail, setDetail] = useState<string>('')
-  const [dueDate, setDueDate] = useState<string>('')
+const TaskForm = ({ type, defaultProgressOrder, setIsModalOpen, task  }: TaskFormProps): JSX.Element => {
+  const [title, setTitle] = useState<string>(task!==undefined?task.title:'')
+  const [detail, setDetail] = useState<string>(task!==undefined?task.detail:'')
+  const [dueDate, setDueDate] = useState<string>(task!==undefined?task.dueDate:'')
   const [progressOrder, setProgressOrder] = useState<number>(defaultProgressOrder)
 
-  const { addTask } = useTasksAction()
+  const { addTask, editTask } = useTasksAction()
 
   const handleSubmit = (): void => {
+    console.log(type)
     if (type === TASK_MODAL_TYPE.ADD) {
         addTask(title, detail, dueDate, progressOrder)
         setIsModalOpen(false)
     }
+    else if (type === TASK_MODAL_TYPE.EDIT && task !== undefined) {
+      editTask(task.id, title, detail, dueDate, progressOrder)
+      setIsModalOpen(false)
+  }
   }
 
   return (

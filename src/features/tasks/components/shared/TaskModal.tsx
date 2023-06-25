@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Dispatch, SetStateAction } from 'react'
-import type { CSSProperties } from '../../../../types'
+import type { CSSProperties, Task } from '../../../../types'
 import TaskForm from './TaskForm'
 
 interface TaskModalProps {
@@ -8,6 +8,7 @@ interface TaskModalProps {
   type: string
   setIsModalOpen: Dispatch<SetStateAction<boolean>>
   defaultProgressOrder: number
+  task?: Task
 }
 
 const TaskModal = ({
@@ -15,6 +16,7 @@ const TaskModal = ({
   type,
   setIsModalOpen,
   defaultProgressOrder,
+  task,
 }: TaskModalProps): JSX.Element => {
   return (
     <div style={styles.container}>
@@ -30,7 +32,7 @@ const TaskModal = ({
           close
         </span>
       </div>
-      <TaskForm type={type} defaultProgressOrder={defaultProgressOrder} setIsModalOpen={setIsModalOpen} />
+      <TaskForm type={type} defaultProgressOrder={defaultProgressOrder} setIsModalOpen={setIsModalOpen} task={task} />
     </div>
   )
 }

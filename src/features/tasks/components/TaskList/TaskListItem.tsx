@@ -1,10 +1,9 @@
-import React from 'react'
-import {useTasksAction} from '../../hooks/Tasks'
+import React, { useState } from 'react'
+import TaskMenu from '../shared/TaskMenu'
+import { useTasksAction } from '../../hooks/Tasks'
 import type { Task, CSSProperties } from '../../../../types'
-import {
-  TASK_PROGRESS_STATUS,
-  TASK_PROGRESS_ID,
-} from '../../../../constants/app'
+import { TASK_PROGRESS_STATUS, TASK_PROGRESS_ID } from '../../../../constants/app'
+import TaskProgress from '../TaskProgress/TaskProgress'
 
 interface TaskListItemProps {
   task: Task
@@ -41,32 +40,40 @@ const getProgressCategory = (progressOrder: number): string => {
 }
 
 const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
+  const { completeTask } = useTasksAction()
 
-  const {completeTask} = useTasksAction()
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   return (
     <div style={styles.tableBody}>
       <div style={styles.tableBodyTaskTitle}>
-      <span
+        <span
           className="material-symbols-outlined"
           style={getIconStyle(task.progressOrder)}
           onClick={(): void => {
             completeTask(task.id)
           }}
-        >check_circle</span>
+        >
+          check_circle
+        </span>
         {task.title}
       </div>
       <div style={styles.tableBodyDetail}>{task.detail}</div>
       <div style={styles.tableBodyDueDate}>{task.dueDate}</div>
       {/* <div style={styles.tableBodyprogress}>{task.progressOrder}</div> */}
-      <div style={styles.tableBodyprogress}>
-        {getProgressCategory(task.progressOrder)}
-      </div>
+      <div style={styles.tableBodyprogress}>{getProgressCategory(task.progressOrder)}</div>
       <div>
-        <span className="material-symbols-outlined" style={styles.menuIcon}>
+        <span
+          className="material-symbols-outlined"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true)
+          }}
+        >
           more_horiz
         </span>
       </div>
+      {isMenuOpen && <TaskMenu setIsMenuOpen={setIsMenuOpen}/>}
     </div>
   )
 }
